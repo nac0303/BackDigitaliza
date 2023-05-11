@@ -9,11 +9,12 @@ public partial class ProcessoSeletivoContext : DbContext
     public ProcessoSeletivoContext()
     {
     }
-
-    public ProcessoSeletivoContext(DbContextOptions<ProcessoSeletivoContext> options)
-        : base(options)
+   
+    public ProcessoSeletivoContext(DbContextOptions<ProcessoSeletivoContext> options): base(options)
     {
+       
     }
+    
 
     public virtual DbSet<Adm> Adms { get; set; }
 
@@ -26,9 +27,9 @@ public partial class ProcessoSeletivoContext : DbContext
     public virtual DbSet<ProcessoSeletivo> ProcessoSeletivos { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){
-        if(!optionsBuilder.IsConfigured)
-        {
 
+        if(!optionsBuilder.IsConfigured){
+            optionsBuilder.UseSqlServer("Server=CT-C-000E2\\SQLEXPRESS;Database=ProcessoSeletivo;Trusted_Connection=True;TrustServerCertificate=True");
         }
     }
         
@@ -41,7 +42,7 @@ public partial class ProcessoSeletivoContext : DbContext
             entity.ToTable("Adm");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+              
                 .HasColumnName("ID");
             entity.Property(e => e.Ativo).HasColumnName("ativo");
             entity.Property(e => e.DataDeNascimento).HasColumnType("datetime");
@@ -61,7 +62,7 @@ public partial class ProcessoSeletivoContext : DbContext
             entity.ToTable("Candidato");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+                
                 .HasColumnName("ID");
             entity.Property(e => e.Curriculo)
                 .HasMaxLength(255)
@@ -118,7 +119,7 @@ public partial class ProcessoSeletivoContext : DbContext
             entity.ToTable("Fase");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+               
                 .HasColumnName("ID");
             entity.Property(e => e.Descrição).IsUnicode(false);
             entity.Property(e => e.IdProcessoSeletivo).HasColumnName("ID_ProcessoSeletivo");
@@ -136,22 +137,15 @@ public partial class ProcessoSeletivoContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__Processo__3214EC272341FB85");
 
             entity.ToTable("ProcessoSeletivo");
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Nome).IsUnicode(false);
             entity.Property(e => e.DataFim).HasColumnType("datetime");
             entity.Property(e => e.DataInicio).HasColumnType("datetime");
-            entity.Property(e => e.IdAdm).HasColumnName("ID_Adm");
-
-            entity.HasOne(d => d.IdAdmNavigation).WithMany(p => p.ProcessoSeletivos)
-                .HasForeignKey(d => d.IdAdm)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ProcessoS__ID_Ad__286302EC");
+            entity.HasOne(p => p.adm);
         });
 
         OnModelCreatingPartial(modelBuilder);
-    }
+    }   
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

@@ -9,6 +9,21 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowSpecificOrigins",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5164", "https://localhost:7141");
+        });
+});
+
+builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
+{
+    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
+
+
 builder.Services.AddDbContext<ProcessoSeletivoContext>(options=> {
     options.UseSqlServer(builder.Configuration.GetConnectionString("constring"));
 });
@@ -21,6 +36,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("corsapp");
 
 app.UseHttpsRedirection();
 

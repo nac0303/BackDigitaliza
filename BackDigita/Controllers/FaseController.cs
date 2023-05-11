@@ -5,12 +5,12 @@ namespace BackDigita.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CadastroCandidato : ControllerBase
+public class FaseController : ControllerBase
 {
 
     private readonly ProcessoSeletivoContext DBContext;
 
-    public CadastroCandidato(ProcessoSeletivoContext dBContext)
+    public FaseController(ProcessoSeletivoContext dBContext)
     {
         this.DBContext = dBContext;
     }
@@ -18,16 +18,18 @@ public class CadastroCandidato : ControllerBase
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var candidatos = this.DBContext.Candidatos.ToList();
+        var candidatos = this.DBContext.Fases.ToList();
         return Ok(candidatos);
     }
 
-    [HttpGet("GetCandiato/{id}")]
-    public async Task<IActionResult> GetCandidato(int id)
+    [HttpGet("GetByCandidatoId/{id}")]
+    public async Task<IActionResult> GetByProcessoId(int id)
     {
-        var candidato = this.DBContext.Candidatos.Where(c => c.Id == id);
-        return Ok(candidato);
+        var FaseProcesso = Models.Fase.getByProcessoId(id);
+
+         return Ok(FaseProcesso);
     }
+
 
     [HttpGet("Update")]
     public async Task<IActionResult> Update()
@@ -41,7 +43,6 @@ public class CadastroCandidato : ControllerBase
     public int registerClient([FromBody] ECandidato candidato)
     {
         var newCandidato = Candidato.convertEntityToModel(candidato);
-        Console.WriteLine(candidato.Nome);
         var id = newCandidato.save();
 
         return 1;

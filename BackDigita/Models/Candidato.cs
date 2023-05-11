@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using Entity;
 namespace BackDigita.Models;
 
 public partial class Candidato
@@ -22,4 +22,49 @@ public partial class Candidato
     public string? Senha { get; set; }
 
     public bool? Ativo { get; set; }
+
+    public static Candidato convertEntityToModel(ECandidato candidato)
+    {
+        return new Candidato()
+        {
+            Id = candidato.Id,
+            Nome = candidato.Nome,
+            DataNascimento = candidato.DataNascimento,
+            Curriculo = candidato.Curriculo,
+            Email = candidato.Email,
+            Telefone = candidato.Telefone,
+            Login = candidato.login,
+            Senha = candidato.Senha,
+            Ativo = candidato.Ativo
+        };
+    }
+    
+    public int save()
+    {
+        int id;
+
+        using (var context = new ProcessoSeletivoContext())
+        {
+
+            var candidato = new Candidato
+            {
+                Nome = this.Nome,
+                Email = this.Email,
+                DataNascimento = this.DataNascimento,
+                Telefone = this.Telefone,
+                Login = this.Login,
+                Senha = this.Senha,
+                Curriculo = this.Curriculo
+            };
+        
+            context.Candidatos.Add(candidato);
+            context.SaveChanges();
+
+
+            id = candidato.Id;
+        }
+        
+        return id;
+      
+    }
 }

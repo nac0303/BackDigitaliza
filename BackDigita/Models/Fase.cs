@@ -16,4 +16,26 @@ public partial class Fase
     public string? Local { get; set; }
 
     public virtual ProcessoSeletivo? IdProcessoSeletivoNavigation { get; set; }
+
+
+    public static List<object> getByProcessoId(int id){
+        
+        List<object> fases = new List<object>();
+
+        using var context = new ProcessoSeletivoContext();
+
+        var fasesDB = context.Fases.Where(s => s.IdProcessoSeletivo == id).ToList();
+        
+        foreach (var fase in fasesDB){
+            fases.Add(new{
+                id = fase.Id,
+                IdProcessoSeletivo = fase.IdProcessoSeletivo,
+                Tipo = fase.Tipo,
+                Descrição = fase.Descrição,
+                Local = fase.Local,
+            });
+        }
+        return fases;
+    }
+
 }
